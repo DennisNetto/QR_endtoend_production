@@ -6,8 +6,8 @@ def qrpic(b):
     import io
 
     # Create a connection
-    mydb = mysql.connector.connect(host="database-1.cbbbmqyvzgqg.us-east-2.rds.amazonaws.com", user="admin",
-                                   password="EvDRgjT3imys6i3", database="tnstorage")
+    mydb = mysql.connector.connect(host="localhost", user="root",
+                                   password="password", database="tnstorage")
 
     # Create a cursor object
     cursor = mydb.cursor()
@@ -25,13 +25,12 @@ def qrpic(b):
     image = data[0][0]
 
     # Decode the string
-    binary_data = base64.b64decode(image)
+    # binary_data = base64.b64decode(image)
 
     # Convert the bytes into a PIL image
-    image = Image.open(io.BytesIO(binary_data))
+    # image = Image.open(io.BytesIO(binary_data))
 
     # Display the image
-    b = str(b)
-    image.save(b + ".jpg")
+    return image
 
 

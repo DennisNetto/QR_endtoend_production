@@ -79,9 +79,9 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'tnstorage',
-        'USER': 'admin',
-        'PASSWORD': 'EvDRgjT3imys6i3',
-        'HOST': 'database-1.cbbbmqyvzgqg.us-east-2.rds.amazonaws.com',   # Or an IP Address that your DB is hosted on
+        'USER': 'root',
+        'PASSWORD': 'password',
+        'HOST': 'localhost',   # Or an IP Address that your DB is hosted on
         'PORT': '3306',
     }
 }

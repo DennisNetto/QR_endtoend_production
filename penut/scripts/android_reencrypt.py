@@ -24,9 +24,3 @@ def rsa_encrypt(s):
     ciphertext = str(ciphertext)
     return ciphertext
 
-
-
-
-
-
-

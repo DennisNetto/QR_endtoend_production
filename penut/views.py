@@ -1,7 +1,7 @@
 from django.shortcuts import render
 from django.http import HttpResponse
-from .models import HumanStorage, TokenStorage
-from .forms import CreateNewEntry, CreateNewQR
+from .models import TokenStorage
+from .forms import CreateNewQR
 
 import os
 import base64
@@ -40,23 +40,6 @@ def createqr(request):
         return HttpResponse("test")
 
 
-def create(response):
-    if response.method == "POST":
-        form = CreateNewEntry(response.POST)
-
-        if form.is_valid():
-            n = form.cleaned_data["id_number"]
-            a = form.cleaned_data["First_name"]
-            m = form.cleaned_data["Last_name"]
-            e = form.cleaned_data["DOB"]
-            t = HumanStorage(id_number=n, First_name=a, Last_name=m, DOB=e)
-            t.save()
-
-    else:
-        form = CreateNewEntry()
-    return render(response, "penut/create.html", {"form": form})
-
-
 def create1(response):
     if response.method == "POST":
         form = CreateNewQR(response.POST)
@@ -67,44 +50,29 @@ def create1(response):
             lname = form.cleaned_data["Last_name"]
             edob = form.cleaned_data["DOB"]
 
-            qry = HumanStorage.objects.get(id_number=num)
-            qfn = qry.First_name
-            qln = qry.Last_name
-            qdb = qry.DOB
-            qdb = str(qdb)
-            if fname == qfn and lname == qln and edob == qdb:
-                try:
-                    TokenStorage.objects.get(id_number=num)
-                    qrpic(num)
-                    qrto = num + ".jpg"
-                    with open(qrto, "rb") as f:
-                        return HttpResponse(f.read(), content_type="image/png")
-                except TokenStorage.DoesNotExist:
-                    hash = hashlib.sha256()
-                    num1 = bytes(num, 'utf-8')
-                    hash.update(num1)
-                    hash1 = (hash.hexdigest())
-                    h = str(hash1)
-                    cryupt(num, fname, lname, edob)
-                    dirtt = num + "private.pem"
-                    with open(dirtt, "rb") as File:
-                        pkey = base64.b64encode(File.read())
+            try:
 
-                        dirttt = num + "qr.png"
+                TokenStorage.objects.get(id_number=num)
+                furlo = qrpic(num)
+                furlo = furlo.decode('ascii')
+                return render(response, 'penut/image.html', {'image': furlo})
+            except TokenStorage.DoesNotExist:
+                hash = hashlib.sha256()
+                num1 = bytes(num, 'utf-8')
+                hash.update(num1)
+                hash1 = (hash.hexdigest())
+                h = str(hash1)
+                privatek = cryupt(num, fname, lname, edob)
 
-                        file = open(dirttt, 'rb').read()
-                        qrcode = base64.b64encode(file)
+                pkey = base64.b64encode(privatek['prikey'])
+                qrcode = base64.b64encode(bytes(privatek['qrccode']))
 
-                    if fname == qfn and lname == qln and edob == qdb:
-                        t = TokenStorage(id_number=num, hash=h, privatekey=pkey, QR=qrcode, Qr_Issued='True')
-                        t.save()
-                        removefile(num + "qr.png")
-                        removefile(num + "private.pem")
-                        removefile(num + "receiver.pem")
-                        qrpic(num)
-                        with open(num + ".jpg", "rb") as f:
-                            return HttpResponse(f.read(), content_type="image/png")
-                        # Need to delete the picture generated
+                t = TokenStorage(id_number=num, hash=h, privatekey=pkey, QR=qrcode, Qr_Issued='True')
+                t.save()
+            furlo = qrpic(num)
+            furlo = furlo.decode('ascii')
+            return render(response, 'penut/image.html', {'image': furlo})
+            # Need to delete the picture generated
     else:
         form = CreateNewQR()
     return render(response, "penut/create1.html", {"form": form})

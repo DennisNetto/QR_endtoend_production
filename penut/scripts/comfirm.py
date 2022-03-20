@@ -34,6 +34,3 @@ def conff(a):
 
     except IndexError:
         return "unknown error-id_number probably not the right "
-
-
-
