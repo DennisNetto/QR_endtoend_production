@@ -2,42 +2,16 @@ from django.shortcuts import render
 from django.http import HttpResponse
 from .models import TokenStorage
 from .forms import CreateNewQR
-
-import os
 import base64
 from .ebcryt import cryupt
 from .qr import qrpic
 import hashlib
-import shutil
 
 
 # Create your views here.
 
-
-def removedir(a):
-    shutil.rmtree(a)
-
-
-def removefile(a):
-    os.remove(a)
-
-
 def index(response):
     return HttpResponse('hello')
-
-
-def qrpi(request):
-    return HttpResponse("test")
-
-
-def createqr(request):
-    try:
-        qry = TokenStorage.objects.get(id_number=27461501745267184763129481)
-        print(qry)
-        return HttpResponse("test")
-
-    except TokenStorage.DoesNotExist:
-        return HttpResponse("test")
 
 
 def create1(response):
