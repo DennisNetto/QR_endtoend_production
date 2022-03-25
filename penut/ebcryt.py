@@ -1,7 +1,6 @@
 import io
-from Crypto.PublicKey import RSA
 from Crypto.Random import get_random_bytes
-from Crypto.Cipher import AES, PKCS1_OAEP
+from Crypto.Cipher import AES
 import binascii
 import qrcode
 import jwt
@@ -10,6 +9,7 @@ import hashlib
 
 def cryupt(a, b, c, d):
     # secret for the jwt verifacation then sets the id_number to type byte for encoding after that its make into a JWT
+    server_option_encrypt = True
     secret = 'secrete'
     a1 = bytes(a, "utf-8")
     encoded = jwt.encode({"id_number": a, "First_name": b, "Last_name": c, "DOB": d}, secret, algorithm="HS256")
