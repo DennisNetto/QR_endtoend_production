@@ -1,7 +1,7 @@
 import socket
 import threading
 from tojwt import check
-from test11 import rsa_encrypt
+from android_reencrypt import rsa_encrypt
 
 HEADER = 5000
 PORT = 5050
