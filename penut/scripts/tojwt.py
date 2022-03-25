@@ -1,14 +1,12 @@
-import os
 import jwt
-from Crypto.PublicKey import RSA
 from get_private import pri
-from Crypto.Cipher import AES, PKCS1_OAEP
+from Crypto.Cipher import AES
 import binascii
-from comfirm import conff
+from Sec_key import JWT_secrete
 
 
 def check(a):
-    key = 'secrete'
+    key = JWT_secrete
 
     qr = bytes(a, "UTF-8")
 
@@ -19,30 +17,23 @@ def check(a):
     hash = hash[2:-1]
 
     result = binascii.unhexlify(data)
-    with open('test.bin', 'wb') as f:
-        f.write(result)
 
-    file_in = open("test.bin", "rb")
-    pri(hash)
-    private_key = RSA.import_key(open(hash + ".pem").read())
+    private_key = pri(hash)
 
-    enc_session_key, nonce, tag, ciphertext = \
-        [file_in.read(x) for x in (private_key.size_in_bytes(), 16, 16, -1)]
+    length = len(result) - 32
+    first = 16 + length
+    nonce = result[:-first]
+    tag = result[16:-length]
+    ciphertext = result[32:]
+    # let's assume that the key is somehow available again
+    cipher = AES.new(private_key, AES.MODE_EAX, nonce)
+    data = cipher.decrypt_and_verify(ciphertext, tag)
 
-    # Decrypt the session key with the private RSA key
-    cipher_rsa = PKCS1_OAEP.new(private_key)
-    session_key = cipher_rsa.decrypt(enc_session_key)
-
-    # Decrypt the data with the AES session key
-    cipher_aes = AES.new(session_key, AES.MODE_EAX, nonce)
-    data = cipher_aes.decrypt_and_verify(ciphertext, tag)
     javaweb = (data.decode("utf-8"))
 
-    final = jwt.decode(javaweb, key, algorithms="HS256")
+    try:
+        final = jwt.decode(javaweb, key, algorithms="HS256")
 
-    res = conff(final['id_number'])
-    if res[0] == final['First_name'] and res[1] == final['Last_name'] and res[2] == final['DOB']:
-        os.remove(hash + ".pem")
-        return res
-    else:
+        return final
+    except jwt.exceptions.InvalidSignatureError:
         return "Information Is Wrong Try Again"

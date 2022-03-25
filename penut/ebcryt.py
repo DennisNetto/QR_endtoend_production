@@ -24,13 +24,18 @@ def cryupt(a, b, c, d):
     data = encoded.encode("utf-8")
 
     # Encrypt the data with the AES session key
-    key = get_random_bytes(16)
-    cipher = AES.new(key, AES.MODE_EAX)
-    ciphertext, tag = cipher.encrypt_and_digest(data)
-    content = [x for x in (cipher.nonce, tag, ciphertext)]
-    content = content[0] + content[1] + content[2]
-    content = bytes(content)
-    result = binascii.hexlify(bytes(content))
+    if server_option_encrypt:
+        key = get_random_bytes(16)
+        cipher = AES.new(key, AES.MODE_EAX)
+        ciphertext, tag = cipher.encrypt_and_digest(data)
+        content = [x for x in (cipher.nonce, tag, ciphertext)]
+        content = content[0] + content[1] + content[2]
+        content = bytes(content)
+        result = binascii.hexlify(bytes(content))
+
+    else:
+        result = data
+
     h = bytes(h, 'utf-8')
     result = result + h
     qr = qrcode.make(result)
@@ -38,6 +43,3 @@ def cryupt(a, b, c, d):
     qr.save(img_byte_arr, format='PNG')
     img_byte_arr = img_byte_arr.getvalue()
     return {'prikey': key, 'qrccode': img_byte_arr}
-
-
-
