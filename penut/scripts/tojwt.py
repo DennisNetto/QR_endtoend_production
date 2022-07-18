@@ -2,11 +2,11 @@ import jwt
 from get_private import pri
 from Crypto.Cipher import AES
 import binascii
-from Sec_key import JWT_secrete
+from .Sec_key import jwtauth
 
 
 def check(a):
-    key = JWT_secrete
+    key = jwtauth()
 
     qr = bytes(a, "UTF-8")
 

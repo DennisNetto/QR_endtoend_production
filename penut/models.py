@@ -5,6 +5,7 @@ from django.db import models
 
 class HumanStorage(models.Model):
     id_number = models.CharField(max_length=26)
+    hash = models.CharField(max_length=64)
     First_name = models.CharField(max_length=22)
     Last_name = models.CharField(max_length=22)
     DOB = models.DateField()
@@ -13,9 +14,7 @@ class HumanStorage(models.Model):
 class TokenStorage(models.Model):
     id_number = models.CharField(max_length=26)
     hash = models.CharField(max_length=64)
-    privatekey = models.BinaryField()
     QR = models.BinaryField()
-    Qr_Issued = models.BooleanField()
 
 
 

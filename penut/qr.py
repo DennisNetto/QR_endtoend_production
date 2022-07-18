@@ -1,9 +1,9 @@
 def qrpic(b):
     # Import the required modules
-    from scripts.Sec_key import mysql
+    from .Sec_key import mysqlauth
 
     # Create a connection
-    mydb = mysql
+    mydb = mysqlauth()
 
     # Create a cursor object
     cursor = mydb.cursor()

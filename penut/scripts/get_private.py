@@ -2,12 +2,14 @@ def pri(b):
     # Import the required modules
     import mysql.connector
     import base64
-    from Sec_key import mysql
+    from .Sec_key import mysqlauth
+
+
 
     try:
         # Create a connection
 
-        mydb = mysql
+        mydb = mysqlauth()
 
         # Create a cursor object
         cursor = mydb.cursor()

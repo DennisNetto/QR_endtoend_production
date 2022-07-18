@@ -1,6 +1,6 @@
 from django.shortcuts import render
 from django.http import HttpResponse
-from .models import TokenStorage
+from .models import TokenStorage, HumanStorage
 from .forms import CreateNewQR
 import base64
 from .ebcryt import cryupt
@@ -31,18 +31,17 @@ def create1(response):
                 furlo = furlo.decode('ascii')
                 return render(response, 'penut/image.html', {'image': furlo})
             except TokenStorage.DoesNotExist:
-                hash = hashlib.sha256()
-                num1 = bytes(num, 'utf-8')
-                hash.update(num1)
-                hash1 = (hash.hexdigest())
-                h = str(hash1)
                 privatek = cryupt(num, fname, lname, edob)
-
+                h = privatek['Hash']
                 pkey = base64.b64encode(privatek['prikey'])
                 qrcode = base64.b64encode(bytes(privatek['qrccode']))
 
-                t = TokenStorage(id_number=num, hash=h, privatekey=pkey, QR=qrcode, Qr_Issued='True')
+                t = TokenStorage(id_number=num, hash=h, QR=qrcode)
                 t.save()
+                w = HumanStorage(id_number=num, First_name=fname, Last_name=lname, DOB=edob, hash=h)
+                print(h)
+                print(num)
+                w.save()
             furlo = qrpic(num)
             furlo = furlo.decode('ascii')
             return render(response, 'penut/image.html', {'image': furlo})
