@@ -5,4 +5,4 @@ This app uses django to make JWT qrcode, it also sends them between the server a
 AWS lambda JWT only version (https://github.com/DennisNetto/Qr-aws-react)
 
 
-Android app (https://github.com/DennisNetto/QR_android)
+Android apps (https://github.com/DennisNetto/QR_android, https://github.com/DennisNetto/Qr_endtoend)
